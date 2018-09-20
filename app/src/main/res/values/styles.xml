@@ -16,5 +16,8 @@
             <item name="android:background">#ff0000ff</item>
             <item name="style_name">blue</item>
         </style>
+        <style name="green_button" >
+            <item name="android:background">#ff00ff00</item>
+        </style>
 
     </resources>

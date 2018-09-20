@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".CustomAttr">
 
-    <KanaButton
+    <com.kana_tutor.customattr.KanaButton
         android:id="@+id/button_1"
         style="@style/red_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button 1!" />
 
-    <KanaButton
+    <com.kana_tutor.customattr.KanaButton
         android:id="@+id/button_2"
         style="@style/blue_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button 2!" />
+    <com.kana_tutor.customattr.KanaButton
+        android:id="@+id/button_3"
+        style="@style/green_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button 3!" />
 
 </LinearLayout>
