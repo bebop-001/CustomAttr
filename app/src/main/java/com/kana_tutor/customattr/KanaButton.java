@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.TypedArray;
+import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import java.lang.reflect.Method;
 public class KanaButton extends android.support.v7.widget.AppCompatButton
         implements View.OnLongClickListener {
     private static final String TAG = KanaButton.class.getSimpleName();
+    private static AudioManager audioManager ;
 
     private Method resolveMethod(Context c, String name) {
         Method longClick = null;
@@ -68,12 +70,16 @@ public class KanaButton extends android.support.v7.widget.AppCompatButton
         ta.recycle();
     }
 
+
     @Override
     public boolean onLongClick(View v) {
         boolean rv = false;
+        audioManager = (AudioManager) getContext().getSystemService(
+                Context.AUDIO_SERVICE);
         if (onLongClickCallback != null) {
             try {
                 rv = (boolean)onLongClickCallback.invoke(getContext(), v);
+                audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
             }
             catch (Exception e) {
                 throw new RuntimeException(String.format(
