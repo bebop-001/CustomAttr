@@ -18,9 +18,12 @@
  -->
 <resources>
     <!-- custom styleable that defines KanaButton and
-         describes style_name as a string.
+         describes style_name as a string.  This doesn't
+         have to have the same name as the custom view
+         we're using but things get confusing otherwise.
     -->
     <declare-styleable name="KanaButton">
         <attr name="style_name" format="string" />
+        <attr name="on_long_click" format="string" />
     </declare-styleable>
 </resources>

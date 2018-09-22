@@ -30,6 +30,7 @@
     <style name="red_button" >
         <item name="android:background">#ffff0000</item>
         <item name="style_name">red</item>
+        <item name="on_long_click">redOnLongClick</item>
     </style>
     <style name="blue_button" >
         <item name="android:background">#ff0000ff</item>
