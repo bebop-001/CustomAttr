@@ -15,79 +15,70 @@
  *  See the License for the specific language governing permissions
  *  and limitations under the License.
  */
-package com.kana_tutor.customattr;
+package com.kana_tutor.customattr
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.res.TypedArray;
-import android.media.AudioManager;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+import android.content.Context
+import android.media.AudioManager
+import android.support.v7.widget.AppCompatButton
+import android.util.AttributeSet
+import android.view.View
+import android.view.View.OnLongClickListener
+import java.lang.reflect.Method
 
-import java.lang.reflect.Method;
+class KanaButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs), OnLongClickListener {
+    val onLongClickCallback: Method?
+    val cbClass: Class<*>
+    val type: String
+    val onLongClickName: String?
+    companion object {
+        private val TAG = KanaButton::class.java.simpleName
+        private var audioManager: AudioManager? = null
+    }
 
-public class KanaButton extends android.support.v7.widget.AppCompatButton
-        implements View.OnLongClickListener {
-    private static final String TAG = KanaButton.class.getSimpleName();
-    private static AudioManager audioManager ;
+    init {
+        val ta = getContext().obtainStyledAttributes(
+                attrs, R.styleable.KanaButton
+        )
+        val s = ta.getString(R.styleable.KanaButton_style_name)
+        type = s ?: "UNDEFINED"
+        onLongClickName = ta.getString(R.styleable.KanaButton_on_long_click)
+        onLongClickCallback = resolveMethod(context, onLongClickName)
+        cbClass = context.javaClass
+        if (onLongClickCallback != null) setOnLongClickListener(this)
+        ta.recycle()
+    }
 
-    private Method resolveMethod(Context c, String name) {
-        Method longClick = null;
+    private fun resolveMethod(c: Context?, name: String?): Method? {
+        var longClick: Method? = null
         if (c != null && name != null) {
             try {
-                Method m = c.getClass().getMethod(name, View.class);
-                if (!m.getReturnType().equals(Boolean.TYPE))
-                    throw new NoSuchMethodException(String.format(
-                        "%s:resolveMethod:onLongClick %s must return boolean"
-                            , TAG, name)
-                    );
-                longClick = m;
+                val m = c.javaClass.getMethod(name, View::class.java)
+                if (m.returnType != java.lang.Boolean.TYPE) throw NoSuchMethodException(String.format(
+                        "%s:resolveMethod:onLongClick %s must return boolean", TAG, name))
+                longClick = m
             }
-            catch (NoSuchMethodException e) {
-                e.printStackTrace();
+            catch (e: NoSuchMethodException) {
+                e.printStackTrace()
             }
         }
-        return longClick;
+        return longClick
     }
 
-    final Method onLongClickCallback;
-    final Class cbClass;
-    final String type, onLongClickName;
-    public KanaButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        TypedArray ta = getContext().obtainStyledAttributes(
-                attrs, R.styleable.KanaButton
-        );
-        String s = ta.getString(R.styleable.KanaButton_style_name);
-        type = (s != null) ? s : "UNDEFINED";
-        onLongClickName = ta.getString(R.styleable.KanaButton_on_long_click);
-        onLongClickCallback = resolveMethod(context, onLongClickName);
-        cbClass = context.getClass();
-        if (onLongClickCallback != null)
-            setOnLongClickListener(this);
-        ta.recycle();
-    }
-
-
-    @Override
-    public boolean onLongClick(View v) {
-        boolean rv = false;
-        audioManager = (AudioManager) getContext().getSystemService(
-                Context.AUDIO_SERVICE);
+    override fun onLongClick(v: View): Boolean {
+        var rv = false
+        audioManager = context.getSystemService(
+                Context.AUDIO_SERVICE) as AudioManager
         if (onLongClickCallback != null) {
             try {
-                rv = (boolean)onLongClickCallback.invoke(getContext(), v);
-                audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+                rv = onLongClickCallback.invoke(context, v) as Boolean
+                audioManager!!.playSoundEffect(AudioManager.FX_KEY_CLICK)
             }
-            catch (Exception e) {
-                throw new RuntimeException(String.format(
-                        "%s:exception on KanaButtonLongClick:%s:%s"
-                    , TAG, onLongClickName, e.getMessage())
-                );
+            catch (e: Exception) {
+                throw RuntimeException(String.format(
+                        "%s:exception on KanaButtonLongClick:%s:%s", TAG, onLongClickName, e.message))
             }
         }
-        return rv;
+        return rv
     }
+
 }
