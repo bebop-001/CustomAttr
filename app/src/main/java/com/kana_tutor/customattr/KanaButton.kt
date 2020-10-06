@@ -21,11 +21,12 @@ import android.content.Context
 import android.media.AudioManager
 import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.View.OnLongClickListener
 import java.lang.reflect.Method
 
-class KanaButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs), OnLongClickListener {
+class KanaButton(context: Context, attrs: AttributeSet) : AppCompatButton(context, attrs), OnLongClickListener {
     val onLongClickCallback: Method?
     val cbClass: Class<*>
     val type: String
@@ -34,7 +35,9 @@ class KanaButton(context: Context, attrs: AttributeSet?) : AppCompatButton(conte
         private val TAG = KanaButton::class.java.simpleName
         private var audioManager: AudioManager? = null
     }
-
+    private val androidNameSpace = "http://schemas.android.com/apk/res/android"
+    private val layoutHeight = attrs.getAttributeValue(androidNameSpace, "layout_height")
+    private val layoutWidth = attrs.getAttributeValue(androidNameSpace, "layout_width")
     init {
         val ta = getContext().obtainStyledAttributes(
                 attrs, R.styleable.KanaButton
@@ -46,6 +49,10 @@ class KanaButton(context: Context, attrs: AttributeSet?) : AppCompatButton(conte
         cbClass = context.javaClass
         if (onLongClickCallback != null) setOnLongClickListener(this)
         ta.recycle()
+        Log.d("KanaButton", "init:$type, " +
+                "layout_width=$layoutWidth, " +
+                "layout_height=$layoutHeight"
+        )
     }
 
     private fun resolveMethod(c: Context?, name: String?): Method? {

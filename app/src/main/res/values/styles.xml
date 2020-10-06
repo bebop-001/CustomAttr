@@ -38,5 +38,6 @@
     </style>
     <style name="green_button" >
         <item name="android:background">#ff00ff00</item>
+        <item name="style_name">green</item>
     </style>
 </resources>
